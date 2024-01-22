@@ -66,9 +66,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public void removeUserById(long id) {
         String sqlRemove = "DELETE FROM users WHERE ID=?";
 
-        try {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlRemove)) {
             connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlRemove);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             connection.commit();
@@ -107,8 +106,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         String cleanQuery = "TRUNCATE users";
 
-        try {
-            Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(cleanQuery);
         } catch (SQLException e) {
             e.printStackTrace();
